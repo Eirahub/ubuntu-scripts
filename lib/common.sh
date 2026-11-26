@@ -21,7 +21,19 @@ wait_for_net() {  # opptil 3 minutter, wifi kan bruke litt tid etter oppstart
 add_apt_repo() {
   local name=$1 key_url=$2 line=$3
   local keyring="/etc/apt/keyrings/$name.gpg" list="/etc/apt/sources.list.d/$name.list"
-  local want="deb [signed-by=$keyring] $line"
+  local want="deb [signed-by=$keyring] $line" url f
+  # Samme repo i en annen fil (f.eks. vscode.sources fra en tidligere installasjon) gir
+  # "Conflicting values set for option Signed-By" og stopper all apt. Flytt slike filer til side.
+  url=${line%% *}; url=${url%/}
+  for f in /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+    [ -f "$f" ] && [ "$f" != "$list" ] || continue
+    if grep -qF "$url" "$f"; then
+      mkdir -p /etc/apt/sources.list.d.ubuntu-scripts-bak
+      mv "$f" /etc/apt/sources.list.d.ubuntu-scripts-bak/
+      log "Flyttet $f til side (samme repo som $name)."
+      rm -f "$KK_TMP/apt-updated"
+    fi
+  done
   if [ -s "$keyring" ] && [ "$(cat "$list" 2>/dev/null)" = "$want" ]; then return 0; fi
   log "Legger til apt-repo $name."
   mkdir -p /etc/apt/keyrings
