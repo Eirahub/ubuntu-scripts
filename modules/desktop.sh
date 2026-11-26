@@ -127,15 +127,13 @@ POWER_LOCKS='/org/gnome/desktop/session/idle-delay
 write_if_changed() {
   if [ "$(cat "$1" 2>/dev/null)" = "$2" ]; then return 1; fi
   mkdir -p "$(dirname "$1")"
-  printf '%s
-' "$2" > "$1"
+  printf '%s\n' "$2" > "$1"
 }
 
 # ensure_profile <profilfil> <linje>...: profilen må lese system-databasen, ellers virker ikke låsene
 ensure_profile() {
   local f=$1 line changed=1; shift
-  [ -f "$f" ] || { printf 'user-db:user
-' > "$f"; changed=0; }
+  [ -f "$f" ] || { printf 'user-db:user\n' > "$f"; changed=0; }
   for line in "$@"; do
     grep -qxF "$line" "$f" || { echo "$line" >> "$f"; changed=0; }
   done
