@@ -111,6 +111,17 @@ user_part() {
   if ! command -v dconf >/dev/null; then log "dconf mangler, hopper over."; return 0; fi
   set_favorites
   if [ "$DESKTOP_TASKBAR_CENTER" = 1 ]; then center_taskbar; fi
+  # De låste systemverdiene (root_part) leses først ved neste innlogging. Sett dem også i økta,
+  # så de virker med en gang.
+  if [ "${DESKTOP_NO_SLEEP_ON_AC:-0}" = 1 ]; then
+    dconf_set /org/gnome/desktop/session/idle-delay "uint32 0"
+    dconf_set /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'"
+  fi
+}
+
+# dconf_set <nøkkel> <verdi>: skriver bare hvis verdien er en annen
+dconf_set() {
+  if [ "$(dconf_cmd read "$1" || true)" != "$2" ]; then dconf_cmd write "$1" "$2" || true; fi
 }
 
 # --- Strøm: låste systeminnstillinger i dconf (root) ---
