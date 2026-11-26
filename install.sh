@@ -44,7 +44,7 @@ if [ ! -f /etc/ubuntu-scripts/config.local.sh ]; then
   cat > /etc/ubuntu-scripts/config.local.sh <<'EOF'
 # Innstillinger bare for denne laptopen. Overstyrer config.sh fra GitHub.
 # Eksempler:
-#   MODULES="pakker java vscode multimc instance-java halisoncode keyring desktop"   # uten brave på denne
+#   MODULES="pakker java vscode intellij multimc instance-java halisoncode keyring desktop"   # uten brave på denne
 #   BRAVE_URL="https://example.org"
 EOF
 fi

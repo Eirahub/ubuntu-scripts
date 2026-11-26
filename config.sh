@@ -5,7 +5,7 @@
 # Moduler som kjøres, i denne rekkefølgen. Fjern et navn for å slå av modulen.
 # En avslått modul rydder etter seg hvis den kan (f.eks. fjerner brave autostart).
 # Tilgjengelige: se mappen modules/.
-MODULES="pakker java vscode brave multimc instance-java halisoncode keyring desktop"
+MODULES="pakker java vscode intellij brave multimc instance-java halisoncode keyring desktop"
 
 # Hvor laptopene henter siste versjon av dette repoet
 REPO_TARBALL="https://codeload.github.com/Eirahub/ubuntu-scripts/tar.gz/refs/heads/main"
@@ -23,6 +23,9 @@ BANDIT_CHECK="bandit.labs.overthewire.org:2220"   # tom = ikke sjekk
 JAVA_VERSIONS="17 21 25"
 JAVA_KIND="jre"                     # jre eller jdk
 
+# --- intellij: IntelliJ IDEA Community, låst til denne versjonen (siste .x hentes automatisk) ---
+INTELLIJ_MAJOR="2025.2"
+
 # --- brave: installer/oppdater Brave og åpne denne siden ved innlogging ---
 BRAVE_URL="https://oppgaver.eirahub.no"
 
@@ -35,7 +38,7 @@ MULTIMC_NEW_DIR="MultiMC"           # relativt til hjemmemappen, brukes hvis Mul
 
 # --- desktop: standardoppsett for skrivebordet, settes på nytt ved hver kjøring ---
 # Festede apper i taskbar, i rekkefølge. "a|b" = første som finnes.
-DESKTOP_FAVORITES="multimc.desktop|exec:multimc org.gnome.Terminal.desktop|org.gnome.Ptyxis.desktop|org.gnome.Console.desktop code.desktop"
+DESKTOP_FAVORITES="multimc.desktop|exec:multimc org.gnome.Terminal.desktop|org.gnome.Ptyxis.desktop|org.gnome.Console.desktop code.desktop|com.microsoft.VSCode.desktop intellij-idea-community.desktop"
 DESKTOP_FAVORITES_EXACT=0           # 1 = bare disse, 0 = disse først, så det som allerede er festet
 DESKTOP_TASKBAR_CENTER=1            # 1 = midtstilte ikoner i Zorin taskbar
 

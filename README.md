@@ -31,12 +31,13 @@ Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ve
 | `pakker` | apt-pakkene kursene trenger (`APT_PACKAGES`), og sjekk av port 2220 til Bandit (Hackerskolen) |
 | `java` | Eclipse Temurin 17, 21 og 25 fra Adoptiums apt-repo |
 | `vscode` | VS Code fra Microsofts apt-repo, fjerner flatpak/snap-versjonen |
+| `intellij` | IntelliJ IDEA Community 2025.2.x i `/opt`, fjerner snap-versjonen |
 | `brave` | Brave fra apt, åpner `BRAVE_URL` ved innlogging og som startside |
 | `multimc` | Installerer MultiMC i `~/MultiMC` hvis den mangler, oppdaterer når nedlastingen endres |
 | `instance-java` | Gir hver MultiMC-instans riktig Java (26.x: 25, 1.20.5 til 1.21.x: 21, 1.17 til 1.20.4: 17) |
 | `halisoncode` | Siste [Halison Code](https://github.com/halisonworks/mod-halisoncode) (og Fabric API) i MultiMC-instansene |
 | `keyring` | Nøkkelring uten passord, så det aldri kommer "lås opp nøkkelring"-vinduer |
-| `desktop` | Fester MultiMC, Terminal og VS Code i taskbar og midtstiller ikonene |
+| `desktop` | Fester MultiMC, Terminal, VS Code og IntelliJ i taskbar, fjerner festede apper som ikke finnes, og midtstiller ikonene |
 
 Halison Code legges i instanser som har moden fra før, eller som har `Halison` i navnet.
 Lag f.eks. en Fabric-instans som heter `Halison Code 1.21.11`, så fylles den ved neste kjøring.

@@ -41,17 +41,24 @@ set_favorites() {
   done
   [ "${#want[@]}" -gt 0 ] || return 0
   current=$(dconf_cmd read /org/gnome/shell/favorite-apps || true)
-  new=$(python3 -I - "$DESKTOP_FAVORITES_EXACT" "$current" "${want[@]}" <<'PY'
+  # Alle apper som skal stå: våre først, så det som allerede er festet (med mindre EXACT=1)
+  local all=() keep=() a
+  mapfile -t all < <(python3 -I - "$DESKTOP_FAVORITES_EXACT" "$current" "${want[@]}" <<'PY'
 import ast, sys
 exact, current, want = sys.argv[1] == "1", sys.argv[2].strip(), sys.argv[3:]
 try:
-    cur = list(ast.literal_eval(current.removeprefix("@as "))) if current else []
+    cur = list(ast.literal_eval((current[4:] if current.startswith("@as ") else current))) if current else []
 except Exception:
     cur = []
-apps = want if exact else want + [a for a in cur if a not in want]
-print("[" + ", ".join("'" + a.replace("'", "\\'") + "'" for a in apps) + "]")
+for a in (want if exact else want + [a for a in cur if a not in want]):
+    print(a)
 PY
 )
+  # Fjern festede apper som ikke finnes lenger (f.eks. snap-versjoner som er avinstallert)
+  for a in "${all[@]}"; do
+    if [ -n "$(resolve_app "$a")" ]; then keep+=("$a"); else log "Fjerner $a fra taskbar (finnes ikke lenger)."; fi
+  done
+  new=$(printf "'%s', " "${keep[@]}"); new="[${new%, }]"
   if [ "$new" != "$current" ]; then
     dconf_cmd write /org/gnome/shell/favorite-apps "$new"
     log "Festede apper: $new"
