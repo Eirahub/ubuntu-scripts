@@ -5,7 +5,7 @@
 # Moduler som kjøres, i denne rekkefølgen. Fjern et navn for å slå av modulen.
 # En avslått modul rydder etter seg hvis den kan (f.eks. fjerner brave autostart).
 # Tilgjengelige: se mappen modules/.
-MODULES="pakker java vscode intellij brave multimc instance-java halisoncode elevbruker ssh systeminnstillinger nullstill keyring desktop"
+MODULES="pakker java vscode intellij brave multimc instance-java halisoncode elevbruker ssh systeminnstillinger wifi nullstill keyring desktop"
 
 # Hvor laptopene henter siste versjon av dette repoet
 REPO_TARBALL="https://codeload.github.com/Eirahub/ubuntu-scripts/tar.gz/refs/heads/main"
@@ -69,6 +69,11 @@ ELEV_AUTOLOGIN=1
 SSH_KEYS="
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII9IMuOEi3Zbkt41UjXP8OdPNRX/Xlmy0RUuXwfANXx5
 "
+
+# --- wifi: kurs-nettet, tilgjengelig for alle brukere og før innlogging ---
+# Passordet skal ALDRI stå her (repoet er offentlig). Det hentes fra tilkoblingen som er lagret på laptopen,
+# eller fra WIFI_PASSWORD i /etc/ubuntu-scripts/config.local.sh.
+WIFI_SSID="TKI-Teknisk"
 
 # --- nullstill: elevbrukeren tilbakestilles til en ren hjemmemappe før innloggingsskjermen ---
 # Øk tallet og push for å nullstille alle laptopene. Skjer ved oppstarten etter at laptopen har hentet

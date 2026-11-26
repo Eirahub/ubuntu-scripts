@@ -40,6 +40,7 @@ Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ve
 | `elevbruker` | Elevbrukeren `bruker`: aldri admin, logges inn automatisk |
 | `ssh` | SSH-server: bare admin-kontoene, bare med nøklene i `SSH_KEYS`, aldri passord |
 | `systeminnstillinger` | GNOME-innstillinger fra [files/gnome.ini](files/gnome.ini), låst etter [files/gnome-laast.txt](files/gnome-laast.txt): skjermen slås ikke av, ingen dvale på strøm, ingen låseskjerm, norsk tastatur, ingen oppdateringsvarsler. Tidssone, sikkerhetsoppdateringer i bakgrunnen, bakgrunnsbilde med laptopnavnet |
+| `wifi` | Kurs-nettet `WIFI_SSID` lagret for alle brukere, kobler til før innlogging. Passordet hentes fra laptopen, aldri fra repoet |
 | `nullstill` | Tilbakestiller elevbrukeren mellom kurs (se under) |
 | `keyring` | Nøkkelring uten passord, så det aldri kommer "lås opp nøkkelring"-vinduer |
 | `desktop` | Fester MultiMC, Terminal, VS Code og IntelliJ i taskbar, fjerner festede apper som ikke finnes, og midtstiller ikonene |
