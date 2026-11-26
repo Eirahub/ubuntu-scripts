@@ -1,0 +1,2 @@
+# Scriptene kjøres på Linux: alltid LF, også når repoet sjekkes ut på Windows
+* text=auto eol=lf
