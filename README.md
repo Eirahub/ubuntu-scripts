@@ -19,11 +19,8 @@ En liten del (nøkkelringen) kjøres i tillegg før innloggingsskjermen, uten ne
 
 Gjør det først på én laptop og sjekk `cat /var/log/ubuntu-scripts.log` før du tar resten.
 
-For hånd, én gang per laptop:
-
-- Logg inn med Microsoft-kontoen i MultiMC.
-- Lag en Fabric-instans med `Halison` i navnet (f.eks. `Halison Code 1.21.11`). Moden kommer ved neste kjøring,
-  eller med en gang med `sudo /opt/ubuntu-scripts/run.sh --modul halisoncode`.
+MultiMC som allerede er installert blir funnet uansett hvor i hjemmemappa den ligger, og instanser
+som har moden får alltid siste versjon. Ingenting må gjøres for hånd.
 
 Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ved neste kjøring.
 

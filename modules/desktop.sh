@@ -13,14 +13,23 @@ dconf_cmd() {
   fi
 }
 
-# Første .desktop-fil som finnes av "a.desktop|b.desktop"
+# Første .desktop-fil som finnes av "a.desktop|b.desktop|exec:ord".
+# "exec:ord" = første snarvei der Exec-linjen inneholder ordet (uansett store/små bokstaver).
 resolve_app() {
-  local id d
+  local id d f
+  local dirs=("$HOME/.local/share/applications" /usr/share/applications /usr/local/share/applications
+              /var/lib/flatpak/exports/share/applications /var/lib/snapd/desktop/applications)
   for id in ${1//|/ }; do
-    for d in "$HOME/.local/share/applications" /usr/share/applications /usr/local/share/applications \
-             /var/lib/flatpak/exports/share/applications /var/lib/snapd/desktop/applications; do
-      if [ -f "$d/$id" ]; then echo "$id"; return 0; fi
-    done
+    if [[ "$id" == exec:* ]]; then
+      for d in "${dirs[@]}"; do
+        f=$(grep -il "^Exec=.*${id#exec:}" "$d"/*.desktop 2>/dev/null | head -n1 || true)
+        if [ -n "$f" ]; then basename "$f"; return 0; fi
+      done
+    else
+      for d in "${dirs[@]}"; do
+        if [ -f "$d/$id" ]; then echo "$id"; return 0; fi
+      done
+    fi
   done
 }
 

@@ -35,9 +35,11 @@ user_part() {
   desktop_entry "$(head -n1 <<< "$dirs")"
 }
 
-desktop_entry() {
+desktop_entry() {  # lager en snarvei bare hvis det ikke finnes en MultiMC-snarvei fra før
   local f="$HOME/.local/share/applications/multimc.desktop"
-  [ -f "$f" ] && return 0
+  if grep -qil '^Exec=.*multimc' "$HOME/.local/share/applications/"*.desktop /usr/share/applications/*.desktop 2>/dev/null; then
+    return 0
+  fi
   mkdir -p "$(dirname "$f")"
   cat > "$f" <<EOF
 [Desktop Entry]

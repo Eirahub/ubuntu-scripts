@@ -35,7 +35,7 @@ MULTIMC_NEW_DIR="MultiMC"           # relativt til hjemmemappen, brukes hvis Mul
 
 # --- desktop: standardoppsett for skrivebordet, settes på nytt ved hver kjøring ---
 # Festede apper i taskbar, i rekkefølge. "a|b" = første som finnes.
-DESKTOP_FAVORITES="multimc.desktop org.gnome.Terminal.desktop|org.gnome.Ptyxis.desktop|org.gnome.Console.desktop code.desktop"
+DESKTOP_FAVORITES="multimc.desktop|exec:multimc org.gnome.Terminal.desktop|org.gnome.Ptyxis.desktop|org.gnome.Console.desktop code.desktop"
 DESKTOP_FAVORITES_EXACT=0           # 1 = bare disse, 0 = disse først, så det som allerede er festet
 DESKTOP_TASKBAR_CENTER=1            # 1 = midtstilte ikoner i Zorin taskbar
 

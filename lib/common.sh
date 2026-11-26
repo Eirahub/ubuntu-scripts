@@ -51,10 +51,14 @@ pkg_version() { dpkg-query -W -f='${Version}' "$1" 2>/dev/null || echo mangler; 
 
 # --- MultiMC (bruker) ---
 
-# Skriver MultiMC-mappene til brukeren (de som har MultiMC-programmet)
+# Skriver MultiMC-mappene til brukeren: mapper med instances/ og MultiMC-programmet,
+# hvor som helst i hjemmemappa (f.eks. ~/MultiMC, ~/Nedlastinger/MultiMC, ~/.local/share/multimc)
 multimc_dirs() {
-  local d
-  for d in "$HOME/$MULTIMC_NEW_DIR" "$HOME/MultiMC" "$HOME/.local/share/multimc" "$HOME/Applications/MultiMC"; do
+  local inst d
+  find "$HOME" -maxdepth 5 -type d -name instances \
+       -not -path '*/.cache/*' -not -path '*/Trash/*' -not -path '*/.minecraft/*' 2>/dev/null |
+  while IFS= read -r inst; do
+    d=$(dirname "$inst")
     if [ -x "$d/MultiMC" ] || [ -x "$d/bin/MultiMC" ]; then echo "$d"; fi
   done | sort -u
 }
