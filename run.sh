@@ -4,7 +4,8 @@
 #   sudo ./run.sh                 alt: oppdater repoet, root-delene, så brukerdelene for hver bruker
 #   sudo ./run.sh --modul NAVN    bare én modul (også om den er slått av i config)
 #   ./run.sh --bruker             bare brukerdelene for deg (kalles av root-kjøringen)
-#   sudo ./run.sh --tidlig        early_user_part for hver bruker, før innloggingsskjermen, uten nett
+#   sudo ./run.sh --tidlig        før innloggingsskjermen, uten nett: early_root_part, så early_user_part per bruker
+#   sudo ./run.sh --nullstill     nullstill elevbrukeren ved neste oppstart
 #   ./run.sh --status             vis moduler og innstillinger
 #   sudo ./run.sh --avinstaller   rydd etter alle moduler som kan det (kalles av install.sh)
 set -euo pipefail
@@ -120,7 +121,14 @@ case "${1:-}" in
   --tidlig)
     need_root
     start_logging
+    for m in $MODULES; do run_part early_root_part "$m"; done
     run_users --bruker-tidlig
+    ;;
+  --nullstill)
+    need_root
+    mkdir -p /var/lib/ubuntu-scripts
+    touch /var/lib/ubuntu-scripts/nullstill-neste
+    echo "Elevbrukeren nullstilles ved neste oppstart. Start på nytt nå med: sudo reboot"
     ;;
   --bruker-tidlig)
     if [ "${2:-}" = --modul ]; then run_part early_user_part "$3"

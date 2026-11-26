@@ -39,6 +39,11 @@ print(r["version"], d["link"], d["checksumLink"])') || { log "Fikk ikke kontakt 
     log "IntelliJ $version installert."
   fi
 
+  # Hopp over spørsmålet om datadeling ved første oppstart
+  if [ -f "$IDEA_DIR/bin/idea.properties" ]; then
+    [ -n "$(ini_set "$IDEA_DIR/bin/idea.properties" 'jb.privacy.policy.text=<!--999.999-->' 'jb.consents.confirmation.enabled=false')" ]       && log "IntelliJ: spørsmål om datadeling slått av."
+  fi
+
   cat > "$IDEA_DESKTOP" <<EOF
 [Desktop Entry]
 Type=Application

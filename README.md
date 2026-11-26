@@ -32,15 +32,38 @@ Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ve
 | `java` | Eclipse Temurin 17, 21 og 25 fra Adoptiums apt-repo |
 | `vscode` | VS Code fra Microsofts apt-repo, fjerner flatpak/snap-versjonen |
 | `intellij` | IntelliJ IDEA Community 2025.2.x i `/opt`, fjerner snap-versjonen |
-| `brave` | Brave fra apt, åpner `BRAVE_URL` ved innlogging og som startside |
-| `multimc` | Installerer MultiMC i `~/MultiMC` hvis den mangler, oppdaterer når nedlastingen endres |
+| `brave` | Brave fra apt og standard nettleser. Åpner `BRAVE_URL` ved innlogging (uten "gjenopprett sider"-spørsmål), bokmerkelinje med kurslenker, ingen passordlagring, uten Rewards/Wallet/VPN/AI, SafeSearch |
+| `vscode` (bruker) | Utvidelsene i `VSCODE_EXTENSIONS`, ingen telemetri og ingen "stoler du på mappa?"-spørsmål |
+| `multimc` | Installerer MultiMC i `~/MultiMC` hvis den mangler, oppdaterer når nedlastingen endres, setter minnet Minecraft får |
 | `instance-java` | Gir hver MultiMC-instans riktig Java (26.x: 25, 1.20.5 til 1.21.x: 21, 1.17 til 1.20.4: 17) |
 | `halisoncode` | Siste [Halison Code](https://github.com/halisonworks/mod-halisoncode) (og Fabric API) i MultiMC-instansene |
+| `elevbruker` | Elevbrukeren `bruker`: aldri admin, logges inn automatisk |
+| `ssh` | SSH-server: bare admin-kontoene, bare med nøklene i `SSH_KEYS`, aldri passord |
+| `systeminnstillinger` | GNOME-innstillinger fra [files/gnome.ini](files/gnome.ini), låst etter [files/gnome-laast.txt](files/gnome-laast.txt): skjermen slås ikke av, ingen dvale på strøm, ingen låseskjerm, norsk tastatur, ingen oppdateringsvarsler. Tidssone, sikkerhetsoppdateringer i bakgrunnen, bakgrunnsbilde med laptopnavnet |
+| `nullstill` | Tilbakestiller elevbrukeren mellom kurs (se under) |
 | `keyring` | Nøkkelring uten passord, så det aldri kommer "lås opp nøkkelring"-vinduer |
-| `desktop` | Fester MultiMC, Terminal, VS Code og IntelliJ i taskbar, fjerner festede apper som ikke finnes, midtstiller ikonene, og hindrer at skjermen slås av og at maskinen går i dvale på strøm |
+| `desktop` | Fester MultiMC, Terminal, VS Code og IntelliJ i taskbar, fjerner festede apper som ikke finnes, og midtstiller ikonene |
 
 Halison Code legges i instanser som har moden fra før, eller som har `Halison` i navnet.
 Lag f.eks. en Fabric-instans som heter `Halison Code 1.21.11`, så fylles den ved neste kjøring.
+
+## Nullstille elevbrukeren mellom kurs
+
+Elevbrukeren får en ren hjemmemappe: filer, nettleserdata (også Halison-prosjektene), VS Code-data, Minecraft-verdener
+og nøkkelring slettes. MultiMC med instanser og Microsoft-innlogging beholdes (`RESET_KEEP`). Det skjer før
+innloggingsskjermen, så ingenting er i bruk.
+
+- **Alle laptopene:** øk `RESET_GENERATION` i [config.sh](config.sh) og push. Hver laptop nullstiller ved oppstarten
+  etter at den har hentet endringen (oftest to omstarter).
+- **Én laptop:** `sudo /opt/ubuntu-scripts/run.sh --nullstill`, og start på nytt.
+
+## Elevbruker og admin
+
+Elevene bruker `bruker`, som logges inn automatisk og ikke er admin. Admin-kontoen på hver laptop (f.eks. `pc-01`)
+er urørt: logg ut, eller bruk SSH. Første gang må Microsoft-kontoen legges inn i MultiMC hos `bruker`, og en instans
+med `Halison` i navnet lages. Det overlever nullstilling.
+
+SSH fra admin-PC-en: `ssh pc-01@eira-pc-01.local` (bare med nøkkelen i `SSH_KEYS`).
 
 **Slå av/på:** rediger `MODULES` i [config.sh](config.sh). En avslått modul rydder etter seg hvis den kan.
 

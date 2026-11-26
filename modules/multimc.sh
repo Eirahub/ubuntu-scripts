@@ -1,4 +1,5 @@
 # multimc: installer MultiMC i ~/MULTIMC_NEW_DIR hvis den mangler, og oppdater den når MULTIMC_URL endres.
+# Setter også minnet Minecraft får (MULTIMC_MEMORY_MB, eller ut fra RAM hvis tom).
 
 root_part() {
   # Qt5-bibliotekene MultiMC trenger
@@ -6,6 +7,26 @@ root_part() {
 }
 
 user_part() {
+  update_multimc
+  set_memory
+}
+
+set_memory() {
+  local mb d total
+  if pgrep -u "$(id -u)" -x MultiMC >/dev/null 2>&1; then return 0; fi   # MultiMC skriver filen når den lukkes
+  mb=${MULTIMC_MEMORY_MB:-}
+  if [ -z "$mb" ]; then
+    # En tredel av RAM, mellom 2 og 4 GB, rundet ned til 512 MB
+    total=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+    mb=$(( total / 3 / 512 * 512 )); [ "$mb" -lt 2048 ] && mb=2048; [ "$mb" -gt 4096 ] && mb=4096
+  fi
+  while IFS= read -r d; do
+    [ -n "$(ini_set "$d/multimc.cfg" "MaxMemAlloc=$mb" "MinMemAlloc=512")" ] && log "MultiMC: Minecraft får $mb MB minne."
+  done < <(multimc_dirs)
+  return 0
+}
+
+update_multimc() {
   local dirs etag old d etag_file="$HOME/.local/state/kodeklubb/multimc.etag"
   mkdir -p "$(dirname "$etag_file")"
   dirs=$(multimc_dirs)

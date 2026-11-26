@@ -104,3 +104,61 @@ PY
 instance_mods_dir() {
   if [ -d "$1/minecraft" ] && [ ! -d "$1/.minecraft" ]; then echo "$1/minecraft/mods"; else echo "$1/.minecraft/mods"; fi
 }
+
+# --- Filer og dconf ---
+
+# write_if_changed <fil> <innhold>: skriver bare ved endring, returnerer 0 hvis filen ble endret
+write_if_changed() {
+  if [ "$(cat "$1" 2>/dev/null)" = "$2" ]; then return 1; fi
+  mkdir -p "$(dirname "$1")"
+  printf '%s\n' "$2" > "$1"
+}
+
+# ini_set <fil> <nøkkel=verdi>...: setter nøkler i en key=value-fil uten seksjoner (MultiMC, idea.properties).
+# Skriver "endret" hvis filen ble endret.
+ini_set() {
+  python3 -I - "$@" <<'PY'
+import sys
+path, pairs = sys.argv[1], [a.split("=", 1) for a in sys.argv[2:]]
+try:
+    lines = open(path).read().splitlines()
+except FileNotFoundError:
+    lines = []
+want = dict(pairs)
+out, seen, changed = [], set(), False
+for line in lines:
+    key = line.split("=", 1)[0]
+    if key in want:
+        seen.add(key)
+        if line != f"{key}={want[key]}":
+            line, changed = f"{key}={want[key]}", True
+    out.append(line)
+for key, value in pairs:
+    if key not in seen:
+        out.append(f"{key}={value}"); changed = True
+if changed:
+    open(path, "w").write("\n".join(out) + "\n")
+    print("endret")
+PY
+}
+
+# dconf mot brukerens økt hvis den er innlogget, ellers en midlertidig økt (brukerdel)
+dconf_cmd() {
+  local bus="/run/user/$(id -u)/bus"
+  if [ -S "$bus" ]; then
+    DBUS_SESSION_BUS_ADDRESS="unix:path=$bus" dconf "$@"
+  else
+    dbus-run-session -- dconf "$@"
+  fi
+}
+
+# dconf_set <nøkkel> <verdi>: skriver bare hvis verdien er en annen (brukerdel)
+dconf_set() {
+  if [ "$(dconf_cmd read "$1" || true)" != "$2" ]; then dconf_cmd write "$1" "$2" || true; fi
+}
+
+# home_of <bruker>
+home_of() { getent passwd "$1" | cut -d: -f6; }
+
+# admin_users: vanlige brukere i gruppen sudo
+admin_users() { getent group sudo | cut -d: -f4 | tr ',' '\n' | grep -v '^$' || true; }
