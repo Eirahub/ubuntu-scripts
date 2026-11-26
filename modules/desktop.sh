@@ -1,7 +1,8 @@
 # desktop: standardoppsett av skrivebordet for hver bruker (Zorin OS / GNOME):
 #   - festede apper i taskbar (DESKTOP_FAVORITES), i den rekkefølgen
 #   - taskbar-ikonene midtstilt (DESKTOP_TASKBAR_CENTER=1), Zorin taskbar
-#   - skjermen slås ikke av og ingen dvale på strøm (DESKTOP_NO_SLEEP_ON_AC=1)
+#   - skjermen slås ikke av og ingen dvale på strøm (DESKTOP_NO_SLEEP_ON_AC=1), låst for alle brukere
+#     og innloggingsskjermen, så det ikke kan endres i Innstillinger
 # Settes på nytt ved hver kjøring, så elevene alltid starter med samme oppsett.
 
 # dconf-kommando mot brukerens økt hvis den er innlogget, ellers en midlertidig økt
@@ -106,22 +107,71 @@ PY
   fi
 }
 
-# dconf_set <nøkkel> <verdi> <beskrivelse>: skriver bare hvis verdien er en annen
-dconf_set() {
-  if [ "$(dconf_cmd read "$1" || true)" != "$2" ]; then
-    dconf_cmd write "$1" "$2"
-    log "$3"
-  fi
-}
-
-no_sleep_on_ac() {
-  dconf_set /org/gnome/desktop/session/idle-delay "uint32 0" "Skjermen slås ikke av."
-  dconf_set /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'" "Ingen dvale på strøm."
-}
-
 user_part() {
   if ! command -v dconf >/dev/null; then log "dconf mangler, hopper over."; return 0; fi
   set_favorites
   if [ "$DESKTOP_TASKBAR_CENTER" = 1 ]; then center_taskbar; fi
-  if [ "${DESKTOP_NO_SLEEP_ON_AC:-0}" = 1 ]; then no_sleep_on_ac; fi
+}
+
+# --- Strøm: låste systeminnstillinger i dconf (root) ---
+POWER_NAME=50-ubuntu-scripts-power
+POWER_SETTINGS='[org/gnome/desktop/session]
+idle-delay=uint32 0
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-type='"'nothing'"
+POWER_LOCKS='/org/gnome/desktop/session/idle-delay
+/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type'
+
+# write_if_changed <fil> <innhold>: returnerer 0 hvis filen ble endret
+write_if_changed() {
+  if [ "$(cat "$1" 2>/dev/null)" = "$2" ]; then return 1; fi
+  mkdir -p "$(dirname "$1")"
+  printf '%s
+' "$2" > "$1"
+}
+
+# ensure_profile <profilfil> <linje>...: profilen må lese system-databasen, ellers virker ikke låsene
+ensure_profile() {
+  local f=$1 line changed=1; shift
+  [ -f "$f" ] || { printf 'user-db:user
+' > "$f"; changed=0; }
+  for line in "$@"; do
+    grep -qxF "$line" "$f" || { echo "$line" >> "$f"; changed=0; }
+  done
+  return $changed
+}
+
+power_lock() {
+  local changed=1
+  ensure_profile /etc/dconf/profile/user "system-db:local" && changed=0
+  write_if_changed "/etc/dconf/db/local.d/$POWER_NAME" "$POWER_SETTINGS" && changed=0
+  write_if_changed "/etc/dconf/db/local.d/locks/$POWER_NAME" "$POWER_LOCKS" && changed=0
+  # Innloggingsskjermen (gdm3) går ellers i dvale etter 20 minutter, også på strøm
+  if [ -f /etc/dconf/profile/gdm ]; then
+    ensure_profile /etc/dconf/profile/gdm "system-db:gdm" && changed=0
+    write_if_changed "/etc/dconf/db/gdm.d/$POWER_NAME" "$POWER_SETTINGS" && changed=0
+  fi
+  if [ "$changed" = 0 ]; then
+    dconf update
+    log "Skjermen slås ikke av og ingen dvale på strøm (låst for alle brukere og innloggingsskjermen)."
+  fi
+}
+
+power_unlock() {
+  local f found=1
+  for f in /etc/dconf/db/local.d/$POWER_NAME /etc/dconf/db/local.d/locks/$POWER_NAME /etc/dconf/db/gdm.d/$POWER_NAME; do
+    [ -f "$f" ] && { rm -f "$f"; found=0; }
+  done
+  if [ "$found" = 0 ]; then dconf update; log "Fjernet låste strøminnstillinger."; fi
+}
+
+root_part() {
+  command -v dconf >/dev/null || return 0
+  if [ "${DESKTOP_NO_SLEEP_ON_AC:-0}" = 1 ]; then power_lock; else power_unlock; fi
+}
+
+uninstall_part() {
+  command -v dconf >/dev/null || return 0
+  power_unlock
 }

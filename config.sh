@@ -41,8 +41,9 @@ MULTIMC_NEW_DIR="MultiMC"           # relativt til hjemmemappen, brukes hvis Mul
 DESKTOP_FAVORITES="multimc.desktop|exec:multimc org.gnome.Terminal.desktop|org.gnome.Ptyxis.desktop|org.gnome.Console.desktop code.desktop|com.microsoft.VSCode.desktop intellij-idea-community.desktop"
 DESKTOP_FAVORITES_EXACT=0           # 1 = bare disse, 0 = disse først, så det som allerede er festet
 DESKTOP_TASKBAR_CENTER=1            # 1 = midtstilte ikoner i Zorin taskbar
-# 1 = skjermen slås aldri av, og maskinen går aldri i dvale på strøm.
-#     På batteri går den fortsatt i dvale etter Zorins vanlige tid (GNOME kan ikke skille skjerm-timeout på strøm/batteri).
+# 1 = skjermen slås aldri av, og maskinen går aldri i dvale på strøm. Låst, så elevene ikke kan endre det,
+#     og gjelder også innloggingsskjermen. På batteri går den fortsatt i dvale etter Zorins vanlige tid
+#     (GNOME kan ikke skille skjerm-timeout på strøm/batteri). 0 = fjerner låsen igjen.
 DESKTOP_NO_SLEEP_ON_AC=1
 
 # --- halisoncode: siste Halison Code-mod (og Fabric API) i MultiMC-instansene ---
