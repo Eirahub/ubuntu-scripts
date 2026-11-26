@@ -19,7 +19,8 @@ source "$KK_DIR/lib/common.sh"
 load_config() {
   # shellcheck source=config.sh
   source "$KK_DIR/config.sh"
-  if [ -f /etc/ubuntu-scripts/config.local.sh ]; then source /etc/ubuntu-scripts/config.local.sh; fi
+  # Lokal config kan ha passord og er bare lesbar for root; brukerdelene trenger den ikke
+  if [ -r /etc/ubuntu-scripts/config.local.sh ]; then source /etc/ubuntu-scripts/config.local.sh; fi
 }
 load_config
 

@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
-# Installerer ubuntu-scripts på en laptop. Kjøres én gang:
+# Installerer ubuntu-scripts på en laptop. Kjøres én gang (eller på nytt for å endre passordene):
 #
-#   curl -fsSL https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash
+#   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo ELEV_PASSWORD='...' WIFI_PASSWORD='...' bash
+#
+# Passordene (fra .env på admin-PC-en) lagres bare på laptopen, i /etc/ubuntu-scripts/config.local.sh (bare root kan lese).
+# Uten dem installeres alt likevel; elevbrukeren får da ikke passord, og wifi-passordet hentes fra laptopen.
 #
 # Fjern igjen:
 #
-#   curl -fsSL https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash -s -- --avinstaller
+#   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash -s -- --avinstaller
 set -euo pipefail
 
 TARBALL="https://codeload.github.com/Eirahub/ubuntu-scripts/tar.gz/refs/heads/main"
@@ -48,6 +51,21 @@ if [ ! -f /etc/ubuntu-scripts/config.local.sh ]; then
 #   BRAVE_URL="https://example.org"
 EOF
 fi
+
+# Passord fra kommandolinja lagres bare her, aldri i repoet
+for var in ELEV_PASSWORD WIFI_PASSWORD; do
+  if [ -n "${!var:-}" ]; then
+    python3 -I - /etc/ubuntu-scripts/config.local.sh "$var" "${!var}" <<'PY'
+import shlex, sys
+path, key, value = sys.argv[1:4]
+lines = [l for l in open(path).read().splitlines() if not l.startswith(key + "=")]
+lines.append(f"{key}={shlex.quote(value)}")
+open(path, "w").write("\n".join(lines) + "\n")
+PY
+    echo "$var lagret i /etc/ubuntu-scripts/config.local.sh."
+  fi
+done
+chmod 600 /etc/ubuntu-scripts/config.local.sh
 
 cat > "$UNIT.service" <<EOF
 [Unit]

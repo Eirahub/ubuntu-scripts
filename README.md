@@ -10,8 +10,11 @@ En liten del (nøkkelringen) kjøres i tillegg før innloggingsskjermen, uten ne
 2. Lim inn denne kommandoen og skriv passordet:
 
    ```bash
-   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash
+   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo ELEV_PASSWORD='...' WIFI_PASSWORD='...' bash
    ```
+
+   Passordene står i `.env` på admin-PC-en (ikke i repoet). De lagres bare på laptopen, i
+   `/etc/ubuntu-scripts/config.local.sh`, som bare root kan lese. Kjør kommandoen på nytt for å endre dem.
 
    (`wget` fordi `curl` ikke alltid er installert på Zorin. Installasjonen legger selv inn det den trenger.)
 3. Vent til loggen vises. Første kjøring tar 5–10 minutter (Java, VS Code, Brave, MultiMC).

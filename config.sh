@@ -60,9 +60,9 @@ SYS_KEYBOARD="no"
 WALLPAPER_TEXT="oppgaver.eirahub.no"
 
 # --- elevbruker: elevbrukeren, aldri admin, logges inn automatisk ---
-# Passordet er ikke hemmelig og trengs nesten aldri (ingen låseskjerm, automatisk innlogging).
+# Passordet (ELEV_PASSWORD) står ikke her, men i /etc/ubuntu-scripts/config.local.sh på hver laptop
+# (settes av install.sh). Trengs nesten aldri: ingen låseskjerm, automatisk innlogging.
 ELEV_USER="bruker"
-ELEV_PASSWORD="12345"
 ELEV_AUTOLOGIN=1
 
 # --- ssh: admin-kontoene (gruppen sudo) kan logges inn på med disse nøklene, aldri med passord ---

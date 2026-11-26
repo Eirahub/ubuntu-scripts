@@ -1,5 +1,6 @@
 # elevbruker: elevbrukeren ELEV_USER finnes, er aldri admin, og logges inn automatisk (ELEV_AUTOLOGIN=1).
-# Passordet (ELEV_PASSWORD) trengs nesten aldri, men settes så brukeren kan låses opp om det skulle trengs.
+# Passordet (ELEV_PASSWORD) kommer fra /etc/ubuntu-scripts/config.local.sh, aldri fra repoet.
+# Det trengs nesten aldri, men settes så brukeren kan låses opp om det skulle trengs.
 # Admin-kontoen(e) på laptopen røres ikke.
 
 GDM_CONF=/etc/gdm3/custom.conf
@@ -43,7 +44,11 @@ root_part() {
     useradd -m -s /bin/bash -c "Elev" "$u"
     log "Laget elevbrukeren $u."
   fi
-  echo "$u:$ELEV_PASSWORD" | chpasswd
+  if [ -n "${ELEV_PASSWORD:-}" ]; then
+    echo "$u:$ELEV_PASSWORD" | chpasswd
+  else
+    log "ELEV_PASSWORD er ikke satt på denne laptopen (kjør install.sh med ELEV_PASSWORD=...)."
+  fi
   # Aldri admin
   for g in sudo adm; do
     if id -nG "$u" | tr ' ' '\n' | grep -qx "$g"; then gpasswd -d "$u" "$g" >/dev/null; log "Fjernet $u fra gruppen $g."; fi
