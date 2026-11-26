@@ -1,6 +1,7 @@
 # desktop: standardoppsett av skrivebordet for hver bruker (Zorin OS / GNOME):
 #   - festede apper i taskbar (DESKTOP_FAVORITES), i den rekkefølgen
 #   - taskbar-ikonene midtstilt (DESKTOP_TASKBAR_CENTER=1), Zorin taskbar
+#   - skjermen slås ikke av og ingen dvale på strøm (DESKTOP_NO_SLEEP_ON_AC=1)
 # Settes på nytt ved hver kjøring, så elevene alltid starter med samme oppsett.
 
 # dconf-kommando mot brukerens økt hvis den er innlogget, ellers en midlertidig økt
@@ -105,8 +106,22 @@ PY
   fi
 }
 
+# dconf_set <nøkkel> <verdi> <beskrivelse>: skriver bare hvis verdien er en annen
+dconf_set() {
+  if [ "$(dconf_cmd read "$1" || true)" != "$2" ]; then
+    dconf_cmd write "$1" "$2"
+    log "$3"
+  fi
+}
+
+no_sleep_on_ac() {
+  dconf_set /org/gnome/desktop/session/idle-delay "uint32 0" "Skjermen slås ikke av."
+  dconf_set /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'" "Ingen dvale på strøm."
+}
+
 user_part() {
   if ! command -v dconf >/dev/null; then log "dconf mangler, hopper over."; return 0; fi
   set_favorites
   if [ "$DESKTOP_TASKBAR_CENTER" = 1 ]; then center_taskbar; fi
+  if [ "${DESKTOP_NO_SLEEP_ON_AC:-0}" = 1 ]; then no_sleep_on_ac; fi
 }

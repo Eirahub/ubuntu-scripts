@@ -37,7 +37,7 @@ Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ve
 | `instance-java` | Gir hver MultiMC-instans riktig Java (26.x: 25, 1.20.5 til 1.21.x: 21, 1.17 til 1.20.4: 17) |
 | `halisoncode` | Siste [Halison Code](https://github.com/halisonworks/mod-halisoncode) (og Fabric API) i MultiMC-instansene |
 | `keyring` | Nøkkelring uten passord, så det aldri kommer "lås opp nøkkelring"-vinduer |
-| `desktop` | Fester MultiMC, Terminal, VS Code og IntelliJ i taskbar, fjerner festede apper som ikke finnes, og midtstiller ikonene |
+| `desktop` | Fester MultiMC, Terminal, VS Code og IntelliJ i taskbar, fjerner festede apper som ikke finnes, midtstiller ikonene, og hindrer at skjermen slås av og at maskinen går i dvale på strøm |
 
 Halison Code legges i instanser som har moden fra før, eller som har `Halison` i navnet.
 Lag f.eks. en Fabric-instans som heter `Halison Code 1.21.11`, så fylles den ved neste kjøring.
