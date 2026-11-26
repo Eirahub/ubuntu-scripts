@@ -1,2 +1,3 @@
-# Lokale notater med innlogging og maskinliste, aldri i det offentlige repoet
+# Lokale notater og hemmeligheter, aldri i det offentlige repoet
 lokalt/
+.env
