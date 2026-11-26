@@ -6,9 +6,24 @@ En liten del (nøkkelringen) kjøres i tillegg før innloggingsskjermen, uten ne
 
 ## Installer på en laptop (én gang)
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash
-```
+1. Logg inn med en bruker som kan bruke `sudo`, og åpne terminalen med **Ctrl+Alt+T**.
+2. Lim inn denne kommandoen og skriv passordet:
+
+   ```bash
+   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash
+   ```
+
+   (`wget` fordi `curl` ikke alltid er installert på Zorin. Installasjonen legger selv inn det den trenger.)
+3. Vent til loggen vises. Første kjøring tar 5–10 minutter (Java, VS Code, Brave, MultiMC).
+4. **Start maskinen på nytt**, så nøkkelringen blir ordnet før innloggingsskjermen.
+
+Gjør det først på én laptop og sjekk `cat /var/log/ubuntu-scripts.log` før du tar resten.
+
+For hånd, én gang per laptop:
+
+- Logg inn med Microsoft-kontoen i MultiMC.
+- Lag en Fabric-instans med `Halison` i navnet (f.eks. `Halison Code 1.21.11`). Moden kommer ved neste kjøring,
+  eller med en gang med `sudo /opt/ubuntu-scripts/run.sh --modul halisoncode`.
 
 Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ved neste kjøring.
 
@@ -51,7 +66,7 @@ sudo /opt/ubuntu-scripts/run.sh --modul halisoncode   # bare én modul
 /opt/ubuntu-scripts/run.sh --status
 ```
 
-Fjern: `curl -fsSL https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash -s -- --avinstaller`
+Fjern: `wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash -s -- --avinstaller`
 
 ## Sikkerhet
 
