@@ -42,6 +42,9 @@ policy = {
     "BraveAIChatEnabled": False,
     "BraveNewsDisabled": True,
     "BraveTalkDisabled": True,
+    # Ingen "nytt i denne versjonen"/velkomstfaner foran oppgavesiden etter oppdateringer
+    "PromotionsEnabled": False,
+    "PromotionalTabsEnabled": False,
 }
 if safe:
     policy["ForceGoogleSafeSearch"] = True
@@ -62,7 +65,7 @@ if ! pgrep -u "\$(id -u)" -x brave >/dev/null 2>&1; then
     [ -f "\$prefs" ] && sed -i 's/"exited_cleanly":false/"exited_cleanly":true/g; s/"exit_type":"[A-Za-z]*"/"exit_type":"Normal"/g' "\$prefs"
   done
 fi
-FLAGS="--hide-crash-restore-bubble"
+FLAGS="--hide-crash-restore-bubble --no-first-run"
 # apt-versjonen åpner siden selv via policyen; flatpak leser ikke /etc/brave, så den får adressen
 if command -v brave-browser >/dev/null; then exec brave-browser \$FLAGS
 elif command -v brave >/dev/null; then exec brave \$FLAGS
