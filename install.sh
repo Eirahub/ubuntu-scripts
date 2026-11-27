@@ -29,6 +29,20 @@ if [ "${1:-}" = --avinstaller ]; then
   exit 0
 fi
 
+# rustdesk-passord: spør etter RustDesk-passordet (vises ikke) i stedet for å ta det fra kommandolinja.
+# Leser fra /dev/tty fordi skriptet selv kommer inn på stdin (wget ... | sudo bash).
+if [ "${1:-}" = rustdesk-passord ] || [ "${1:-}" = --rustdesk-passord ]; then
+  while :; do
+    read -rsp "Nytt RustDesk-passord (minst 8 tegn): " p1 </dev/tty; echo
+    read -rsp "Skriv det en gang til: " p2 </dev/tty; echo
+    if [ "$p1" != "$p2" ]; then echo "Passordene var ulike, prøv igjen."
+    elif [ "${#p1}" -lt 8 ]; then echo "For kort, minst 8 tegn. Prøv igjen."
+    else break; fi
+  done
+  RUSTDESK_PASSWORD=$p1
+  unset p1 p2
+fi
+
 for cmd in curl python3 tar gpg; do
   command -v "$cmd" >/dev/null || { apt-get update -qq; apt-get install -y -qq curl python3 tar gpg; break; }
 done

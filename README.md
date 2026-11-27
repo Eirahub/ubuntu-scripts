@@ -83,14 +83,15 @@ Slås modulen `rustdesk` av, fjernes brannmurreglene den la til. RustDesk og Tai
 
 ### Sette eller bytte RustDesk-passordet på en laptop
 
-Logg inn som admin, åpne terminalen (**Ctrl+Alt+T**) og lim inn (passordet står i `.env` på admin-PC-en):
+Logg inn som admin, åpne terminalen (**Ctrl+Alt+T**) og lim inn:
 
 ```bash
- wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo RUSTDESK_PASSWORD='...' bash
+wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo bash -s rustdesk-passord
 ```
 
-Mellomrommet først gjør at kommandoen ikke lagres i historikken. De andre passordene på laptopen (`ELEV_PASSWORD`,
-`WIFI_PASSWORD`) blir stående; bare variablene du gir med, byttes. Start laptopen på nytt etterpå hvis den fortsatt
+Først spør `sudo` etter admin-passordet. Så spør skriptet etter RustDesk-passordet to ganger (står i `.env` på
+admin-PC-en, minst 8 tegn). Det vises ikke og havner ikke i historikken. De andre passordene på laptopen
+(`ELEV_PASSWORD`, `WIFI_PASSWORD`) blir stående. Start laptopen på nytt etterpå hvis den fortsatt
 bruker Wayland (`echo $XDG_SESSION_TYPE` viser `wayland`), ellers kan ikke RustDesk vise skjermen.
 
 Laptoper som logges inn i Tailscale for hånd i stedet for med `TAILSCALE_AUTHKEY`, skal ha taggen:
