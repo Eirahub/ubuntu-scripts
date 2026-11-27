@@ -81,6 +81,21 @@ før skjermen kan deles (Xorg i stedet for Wayland).
 
 Slås modulen `rustdesk` av, fjernes brannmurreglene den la til. RustDesk og Tailscale blir stående.
 
+### Sette eller bytte RustDesk-passordet på en laptop
+
+Logg inn som admin, åpne terminalen (**Ctrl+Alt+T**) og lim inn (passordet står i `.env` på admin-PC-en):
+
+```bash
+ wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo RUSTDESK_PASSWORD='...' bash
+```
+
+Mellomrommet først gjør at kommandoen ikke lagres i historikken. De andre passordene på laptopen (`ELEV_PASSWORD`,
+`WIFI_PASSWORD`) blir stående; bare variablene du gir med, byttes. Start laptopen på nytt etterpå hvis den fortsatt
+bruker Wayland (`echo $XDG_SESSION_TYPE` viser `wayland`), ellers kan ikke RustDesk vise skjermen.
+
+Laptoper som logges inn i Tailscale for hånd i stedet for med `TAILSCALE_AUTHKEY`, skal ha taggen:
+`sudo tailscale up --advertise-tags=tag:kodeklubb`. Uten taggen slipper ikke admin-PC-en til.
+
 **Slå av/på:** rediger `MODULES` i [config.sh](config.sh). En avslått modul rydder etter seg hvis den kan.
 
 **Én laptop annerledes:** skriv overstyringer i `/etc/ubuntu-scripts/config.local.sh` på den laptopen.
