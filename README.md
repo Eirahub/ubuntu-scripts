@@ -41,6 +41,7 @@ Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ve
 | `instance-java` | Gir hver MultiMC-instans riktig Java (26.x: 25, 1.20.5 til 1.21.x: 21, 1.17 til 1.20.4: 17) |
 | `halisoncode` | Siste [Halison Code](https://github.com/halisonworks/mod-halisoncode) (og Fabric API) i MultiMC-instansene |
 | `elevbruker` | Elevbrukeren `bruker`: aldri admin, logges inn automatisk |
+| `hackerlab` | Hackerskolen ferdig satt opp: laben i `~/hackerlab` (og `/etc/skel`), Kiosken på `http://www.kiosken.localhost` via Caddy (bare på maskinen selv) og den hemmelige tjenesten, som brukertjenester for elevbrukeren. Kiosken starter på nytt når `kiosk.py` lagres. Slått av: tjenestene og Caddy-oppsettet fjernes |
 | `ssh` | SSH-server: bare admin-kontoene, bare med nøklene i `SSH_KEYS`, aldri passord |
 | `tailscale` | Tailscale fra den offisielle apt-kilden. Logges inn én gang med `TAILSCALE_AUTHKEY` (og taggene i `TAILSCALE_TAGS`), en innlogget laptop røres ikke |
 | `rustdesk` | RustDesk `RUSTDESK_VERSION` med direkte IP-tilgang (port 21118), fast passord fra laptopen og bare fra `RUSTDESK_WHITELIST`. Slår av Wayland i GDM (Xorg) og åpner 21118 i ufw fra Tailscale og `RUSTDESK_LAN_CIDRS` hvis ufw er på |
@@ -62,6 +63,10 @@ innloggingsskjermen, så ingenting er i bruk.
 - **Alle laptopene:** øk `RESET_GENERATION` i [config.sh](config.sh) og push. Hver laptop nullstiller ved oppstarten
   etter at den har hentet endringen (oftest to omstarter).
 - **Én laptop:** `sudo /opt/ubuntu-scripts/run.sh --nullstill`, og start på nytt.
+
+Hackerskolen: elevene får ikke samme laptop hver gang. Nullstill mellom øktene, så neste elev starter med en ny lab
+og ikke ser flaggene til den forrige. Fremgangen følger eleven: `python3 sjekk.py status` viser en fremgangskode,
+og `python3 sjekk.py hent KODE` henter flaggene på en annen laptop.
 
 ## Elevbruker og admin
 

@@ -5,7 +5,7 @@
 # Moduler som kjøres, i denne rekkefølgen. Fjern et navn for å slå av modulen.
 # En avslått modul rydder etter seg hvis den kan (f.eks. fjerner brave autostart).
 # Tilgjengelige: se mappen modules/.
-MODULES="pakker java vscode intellij brave multimc instance-java halisoncode elevbruker ssh tailscale rustdesk systeminnstillinger wifi nullstill keyring desktop"
+MODULES="pakker java vscode intellij brave multimc instance-java halisoncode elevbruker hackerlab ssh tailscale rustdesk systeminnstillinger wifi nullstill keyring desktop"
 
 # Hvor laptopene henter siste versjon av dette repoet
 REPO_TARBALL="https://codeload.github.com/Eirahub/ubuntu-scripts/tar.gz/refs/heads/main"
@@ -18,6 +18,13 @@ APT_PACKAGES="
 # Hackerskolen (oppgaver.eirahub.no/hackerskolen): python3, git, openssh-client (Bandit),
 #   libimage-exiftool-perl (Bildet avslører deg), curl, unzip (hackerlab.zip)
 BANDIT_CHECK="bandit.labs.overthewire.org:2220"   # tom = ikke sjekk
+
+# --- hackerlab: Hackerskolen ferdig satt opp for elevbrukeren ---
+# ~/hackerlab, Kiosken på http://HACKERLAB_HOST (Caddy på port 80, bare på maskinen selv) og den
+# hemmelige tjenesten, som starter ved innlogging. Fjern "hackerlab" fra MODULES når kurset ikke går,
+# så har ikke laptopene en sårbar nettside kjørende.
+HACKERLAB_ZIP="https://oppgaver.eirahub.no/hackerskolen/sett_opp_laben/hackerlab.zip"
+HACKERLAB_HOST="www.kiosken.localhost"   # må slutte på .localhost (peker alltid på maskinen selv)
 
 # --- java: Eclipse Temurin fra Adoptiums apt-repo ---
 JAVA_VERSIONS="17 21 25"
@@ -32,6 +39,7 @@ BRAVE_URL="https://oppgaver.eirahub.no"
 BRAVE_BOOKMARKS="
 Oppgaver|https://oppgaver.eirahub.no
 Hackerskolen|https://oppgaver.eirahub.no/hackerskolen/
+Kiosken|http://www.kiosken.localhost
 "
 BRAVE_SAFE_SEARCH=1                 # 1 = tvungen SafeSearch i Google og begrenset modus i YouTube
 
