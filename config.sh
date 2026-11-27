@@ -80,7 +80,7 @@ TAILSCALE_TAGS="tag:kodeklubb"      # tom = ingen tagger
 # Passordet (RUSTDESK_PASSWORD) står ikke her, men i /etc/ubuntu-scripts/config.local.sh
 # på hver laptop (settes av install.sh).
 RUSTDESK_VERSION="1.5.3"
-RUSTDESK_WHITELIST="192.168.10.185,100.103.79.116"   # admin-PC-en på LAN og Tailscale
+RUSTDESK_WHITELIST="192.168.10.185,100.103.79.116,100.90.148.76"   # meta-office (LAN, Tailscale) og meta-laptop (Tailscale)
 RUSTDESK_LAN_CIDRS="192.168.10.0/24"                 # ufw åpner 21118 herfra og fra tailscale0
 
 # --- wifi: kurs-nettet, tilgjengelig for alle brukere og før innlogging ---
