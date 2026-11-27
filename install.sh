@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Installerer ubuntu-scripts på en laptop. Kjøres én gang (eller på nytt for å endre passordene):
 #
-#   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo ELEV_PASSWORD='...' WIFI_PASSWORD='...' bash
+#   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo ELEV_PASSWORD='...' WIFI_PASSWORD='...' RUSTDESK_PASSWORD='...' TAILSCALE_AUTHKEY='...' bash
 #
-# Passordene (fra .env på admin-PC-en) lagres bare på laptopen, i /etc/ubuntu-scripts/config.local.sh (bare root kan lese).
-# Uten dem installeres alt likevel; elevbrukeren får da ikke passord, og wifi-passordet hentes fra laptopen.
+# Passordene og Tailscale-nøkkelen (fra .env på admin-PC-en) lagres bare på laptopen, i /etc/ubuntu-scripts/config.local.sh (bare root kan lese).
+# Uten dem installeres alt likevel; elevbrukeren får da ikke passord, wifi-passordet hentes fra laptopen,
+# RustDesk får ikke fast passord og Tailscale logges ikke inn.
 #
 # Fjern igjen:
 #
@@ -24,7 +25,7 @@ if [ "${1:-}" = --avinstaller ]; then
   rm -f "$UNIT.service" "$UNIT.timer" "$UNIT-early.service"
   systemctl daemon-reload
   rm -rf "$DIR"
-  echo "Fjernet. Java, VS Code, Brave, MultiMC og mods er latt være. /etc/ubuntu-scripts og loggen er latt være."
+  echo "Fjernet. Java, VS Code, Brave, MultiMC, mods, RustDesk og Tailscale er latt være. /etc/ubuntu-scripts og loggen er latt være."
   exit 0
 fi
 
@@ -53,7 +54,7 @@ EOF
 fi
 
 # Passord fra kommandolinja lagres bare her, aldri i repoet
-for var in ELEV_PASSWORD WIFI_PASSWORD; do
+for var in ELEV_PASSWORD WIFI_PASSWORD RUSTDESK_PASSWORD TAILSCALE_AUTHKEY; do
   if [ -n "${!var:-}" ]; then
     python3 -I - /etc/ubuntu-scripts/config.local.sh "$var" "${!var}" <<'PY'
 import shlex, sys

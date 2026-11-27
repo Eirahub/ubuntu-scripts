@@ -10,10 +10,10 @@ En liten del (nøkkelringen) kjøres i tillegg før innloggingsskjermen, uten ne
 2. Lim inn denne kommandoen og skriv passordet:
 
    ```bash
-   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo ELEV_PASSWORD='...' WIFI_PASSWORD='...' bash
+   wget -qO- https://raw.githubusercontent.com/Eirahub/ubuntu-scripts/main/install.sh | sudo ELEV_PASSWORD='...' WIFI_PASSWORD='...' RUSTDESK_PASSWORD='...' TAILSCALE_AUTHKEY='...' bash
    ```
 
-   Passordene står i `.env` på admin-PC-en (ikke i repoet). De lagres bare på laptopen, i
+   Passordene og Tailscale-nøkkelen står i `.env` på admin-PC-en (ikke i repoet). De lagres bare på laptopen, i
    `/etc/ubuntu-scripts/config.local.sh`, som bare root kan lese. Kjør kommandoen på nytt for å endre dem.
 
    (`wget` fordi `curl` ikke alltid er installert på Zorin. Installasjonen legger selv inn det den trenger.)
@@ -42,6 +42,8 @@ Etter det er alt styrt herfra: endringer som pushes til `main` når laptopene ve
 | `halisoncode` | Siste [Halison Code](https://github.com/halisonworks/mod-halisoncode) (og Fabric API) i MultiMC-instansene |
 | `elevbruker` | Elevbrukeren `bruker`: aldri admin, logges inn automatisk |
 | `ssh` | SSH-server: bare admin-kontoene, bare med nøklene i `SSH_KEYS`, aldri passord |
+| `tailscale` | Tailscale fra den offisielle apt-kilden. Logges inn én gang med `TAILSCALE_AUTHKEY` (og taggene i `TAILSCALE_TAGS`), en innlogget laptop røres ikke |
+| `rustdesk` | RustDesk `RUSTDESK_VERSION` med direkte IP-tilgang (port 21118), fast passord fra laptopen og bare fra `RUSTDESK_WHITELIST`. Slår av Wayland i GDM (Xorg) og åpner 21118 i ufw fra Tailscale og `RUSTDESK_LAN_CIDRS` hvis ufw er på |
 | `systeminnstillinger` | GNOME-innstillinger fra [files/gnome.ini](files/gnome.ini), låst etter [files/gnome-laast.txt](files/gnome-laast.txt): skjermen slås ikke av, ingen dvale på strøm, ingen låseskjerm, norsk tastatur, ingen oppdateringsvarsler. Tidssone, sikkerhetsoppdateringer i bakgrunnen, bakgrunnsbilde med laptopnavnet |
 | `wifi` | Kurs-nettet `WIFI_SSID` lagret for alle brukere, kobler til før innlogging. Passordet hentes fra laptopen, aldri fra repoet |
 | `nullstill` | Tilbakestiller elevbrukeren mellom kurs (se under) |
@@ -68,6 +70,16 @@ er urørt: logg ut, eller bruk SSH. Første gang må Microsoft-kontoen legges in
 med `Halison` i navnet lages. Det overlever nullstilling.
 
 SSH fra admin-PC-en: `ssh pc-01@eira-pc-01.local` (bare med nøkkelen i `SSH_KEYS`).
+
+## Fjernstyring (RustDesk over Tailscale)
+
+Hver laptop logges inn i Tailscale med `TAILSCALE_AUTHKEY` og kjører RustDesk med direkte IP-tilgang.
+Fra admin-PC-en (som også må være i Tailscale): skriv laptopens Tailscale-IP (`tailscale ip -4` på laptopen,
+eller se admin-konsollet) i RustDesk og bruk passordet `RUSTDESK_PASSWORD` fra `.env`. På kurs-nettet går også
+LAN-adressen. Bare adressene i `RUSTDESK_WHITELIST` slipper inn. Etter første installasjon må laptopen startes på nytt
+før skjermen kan deles (Xorg i stedet for Wayland).
+
+Slås modulen `rustdesk` av, fjernes brannmurreglene den la til. RustDesk og Tailscale blir stående.
 
 **Slå av/på:** rediger `MODULES` i [config.sh](config.sh). En avslått modul rydder etter seg hvis den kan.
 

@@ -5,7 +5,7 @@
 # Moduler som kjøres, i denne rekkefølgen. Fjern et navn for å slå av modulen.
 # En avslått modul rydder etter seg hvis den kan (f.eks. fjerner brave autostart).
 # Tilgjengelige: se mappen modules/.
-MODULES="pakker java vscode intellij brave multimc instance-java halisoncode elevbruker ssh systeminnstillinger wifi nullstill keyring desktop"
+MODULES="pakker java vscode intellij brave multimc instance-java halisoncode elevbruker ssh tailscale rustdesk systeminnstillinger wifi nullstill keyring desktop"
 
 # Hvor laptopene henter siste versjon av dette repoet
 REPO_TARBALL="https://codeload.github.com/Eirahub/ubuntu-scripts/tar.gz/refs/heads/main"
@@ -68,7 +68,20 @@ ELEV_AUTOLOGIN=1
 # --- ssh: admin-kontoene (gruppen sudo) kan logges inn på med disse nøklene, aldri med passord ---
 SSH_KEYS="
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII9IMuOEi3Zbkt41UjXP8OdPNRX/Xlmy0RUuXwfANXx5
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP6cBVV1SgUJU5yNGNA7zH+LlTxcoYmXDDDQNEzK8UF3 devlab-admin
 "
+
+# --- tailscale: Tailscale fra den offisielle apt-kilden, logges inn én gang ---
+# Innloggingsnøkkelen (TAILSCALE_AUTHKEY) står ikke her, men i /etc/ubuntu-scripts/config.local.sh
+# på hver laptop (settes av install.sh). En laptop som allerede er innlogget røres ikke.
+TAILSCALE_TAGS="tag:kodeklubb"      # tom = ingen tagger
+
+# --- rustdesk: fjernstyring med direkte IP-tilgang (port 21118), bare fast passord ---
+# Passordet (RUSTDESK_PASSWORD) står ikke her, men i /etc/ubuntu-scripts/config.local.sh
+# på hver laptop (settes av install.sh).
+RUSTDESK_VERSION="1.5.3"
+RUSTDESK_WHITELIST="192.168.10.185,100.103.79.116"   # admin-PC-en på LAN og Tailscale
+RUSTDESK_LAN_CIDRS="192.168.10.0/24"                 # ufw åpner 21118 herfra og fra tailscale0
 
 # --- wifi: kurs-nettet, tilgjengelig for alle brukere og før innlogging ---
 # Passordet skal ALDRI stå her (repoet er offentlig). Det hentes fra tilkoblingen som er lagret på laptopen,
